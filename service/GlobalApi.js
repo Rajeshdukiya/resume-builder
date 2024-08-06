@@ -9,7 +9,6 @@ const axiosClient = axios.create({
         'Authorization': `Bearer ${API_KEY}`
     },
 });
-
 const CreateNewResume = async (data) => {
     try {
         console.log('Sending data:', data); 
@@ -22,7 +21,9 @@ const CreateNewResume = async (data) => {
     }
 };
 
+const GetUserResumes = (userEmail)=>axiosClient.get('/user-resumes?filters[userEmail][$eq]='+userEmail);
 
 export default {
-    CreateNewResume
+    CreateNewResume,
+    GetUserResumes
 };
