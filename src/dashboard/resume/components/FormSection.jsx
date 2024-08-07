@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import PersonalDetail from './forms/PersonalDetail'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, LayoutGrid } from 'lucide-react'
+import Summery from './forms/Summery';
+
 
 
 const FormSection = () => {
@@ -12,6 +14,11 @@ const FormSection = () => {
     <div>
       <div className="flex justify-between items-center">
         <div className="flex gap-5">
+       
+          <Button variant="outline" size="sm" className="flex gap-2"><LayoutGrid/></Button>
+          
+         
+         
         </div>
         <div className="flex gap-2">
           {activeFormIndex > 1 && (
@@ -36,8 +43,10 @@ const FormSection = () => {
         </div>
       </div>
       {/* Personal Detail */}
-      {activeFormIndex==1? 
+      {
+        activeFormIndex==1? 
       <PersonalDetail enabledNext={(v)=>setEnableNext(v)} />
+      :activeFormIndex==2?<Summery  enabledNext={(v)=>setEnableNext(v)} />
       :null}
       {/* Summery */}
 
