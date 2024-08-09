@@ -8,25 +8,26 @@ import { useParams } from 'react-router-dom'
 import GlobalApi from './../../../../../service/GlobalApi'
 import { toast } from 'sonner'
 
+const formField = {
+  universityName:'',
+  degree:'',
+  major:'',
+  startDate:'',
+  endDate:'',
+  description:''
+}
+
 const EducationalDetail = () => {
 
   const [loading,setLoading]=useState(false);
   const {resumeInfo,setResumeInfo}=useContext(ResumeInfoContext);
-  const params=useParams();
-  const [educationalList,setEducationalList]=useState([
-    {
-      universityName:'',
-      degree:'',
-      major:'',
-      startDate:'',
-      endDate:'',
-      description:''
-    }
-  ])
+  const params = useParams();
+  const [educationalList,setEducationalList]=useState([formField])
 
   useEffect(()=>{
     resumeInfo&&setEducationalList(resumeInfo?.education)
-  },[])
+  },[resumeInfo])
+
   const handleChange=(event,index)=>{
     const newEntries=educationalList.slice();
     const {name,value}=event.target;
@@ -35,38 +36,30 @@ const EducationalDetail = () => {
   }
 
   const AddNewEducation=()=>{
-    setEducationalList([...educationalList,
-      {
-        universityName:'',
-        degree:'',
-        major:'',
-        startDate:'',
-        endDate:'',
-        description:''
-      }
-    ])
+    setEducationalList([...educationalList,{ ...formField }])
   }
   const RemoveEducation=()=>{
+    if (educationalList.length > 1){
     setEducationalList(educationalList=>educationalList.slice(0,-1))
-
+    }
   }
   const onSave=()=>{
     setLoading(true)
     const data={
       data:{
-        education:educationalList.map(({ id, ...rest }) => rest)
+        Education:educationalList.map(({ id, ...rest }) => rest)
       }
     }
-
-    GlobalApi.UpdateResumeDetail(params.resumeId,data).then(resp=>{
+    GlobalApi.UpdateResumeDetail(params?.resumeId,data)
+     .then((resp)=>{
       console.log(resp);
       setLoading(false)
       toast('Details updated !')
     },(error)=>{
       setLoading(false);
       toast('Server Error, Please try again!')
-    })
-
+    }
+  )
   }
 
   useEffect(()=>{
@@ -74,7 +67,7 @@ const EducationalDetail = () => {
       ...resumeInfo,
       education:educationalList
     })
-  },[educationalList])
+  },[])
 
   return (
     <div className='p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10'>
@@ -82,7 +75,7 @@ const EducationalDetail = () => {
     <p>Add Your educational details</p>
 
     <div>
-      {educationalList.map((item,index)=>(
+      {educationalList?.map((item,index)=>(
         <div key={index}>
           <div className='grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg'>
             <div className='col-span-2'>

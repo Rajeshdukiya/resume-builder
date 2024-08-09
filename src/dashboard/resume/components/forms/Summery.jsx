@@ -16,19 +16,13 @@ const Summery = ({ enabledNext }) => {
   const [summery, setSummery] = useState();
   const [loading, setLoading] = useState(false);
   const params = useParams();
-  const [aiGeneratedSummeryList, setAiGeneratedSummeryList] = useState();
+  const [aiGeneratedSummeryList, setAiGeneratedSummeryList] = useState([]);
 
-  useEffect(() => {
-    summery &&
-      setResumeInfo({
-        ...resumeInfo,
-        summery: summery,
-      });
-  }, [summery]);
+
 
   const GenerateSummeryFromAI = async () => {
     setLoading(true);
-    const PROMPT = promot.replace("{jobTitle}", resumeInfo?.jobTitle);
+    const PROMPT = promot.replace("{jobTitle}",resumeInfo?.jobTitle);
     console.log(PROMPT);
     const result = await AIChatSession.sendMessage(PROMPT);
     console.log(JSON.parse(result.response.text()));
@@ -40,11 +34,11 @@ const Summery = ({ enabledNext }) => {
     e.preventDefault();
     setLoading(true);
     const data = {
-      data: {
-        summery: summery,
+      data:{
+        summery:summery,
       },
     };
-    GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
+    GlobalApi.UpdateResumeDetail(params?.resumeId,data).then(
       (resp) => {
         console.log(resp);
         enabledNext(true);
@@ -56,7 +50,12 @@ const Summery = ({ enabledNext }) => {
       }
     );
   };
-
+  useEffect(() => {
+    summery&&setResumeInfo({
+        ...resumeInfo,
+        summery:summery,
+      });
+  },[summery]);
   return (
     <div>
       <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
@@ -93,9 +92,9 @@ const Summery = ({ enabledNext }) => {
       {aiGeneratedSummeryList && aiGeneratedSummeryList.length > 0 && (
         <div>
             <h2 className="font-bold text-lg">Suggestions</h2>
-            {aiGeneratedSummeryList.map((item, index) => (
+            {aiGeneratedSummeryList.map((item,index) => (
                 <div key={index}>
-                    <h2 className="font-bold my-1">Level: {item?.experienceLevel}</h2>
+                    <h2 className="font-bold my-1">Level:{item?.experienceLevel}</h2>
                     <p>{item?.summery}</p>
                 </div>
             ))}
